@@ -45,34 +45,37 @@
             // 
             // lblCurrentTrack
             // 
-            this.lblCurrentTrack.AutoSize = true;
-            this.lblCurrentTrack.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCurrentTrack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCurrentTrack.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentTrack.ForeColor = System.Drawing.Color.DarkGray;
             this.lblCurrentTrack.Location = new System.Drawing.Point(193, 22);
             this.lblCurrentTrack.Name = "lblCurrentTrack";
-            this.lblCurrentTrack.Size = new System.Drawing.Size(54, 22);
+            this.lblCurrentTrack.Size = new System.Drawing.Size(418, 20);
             this.lblCurrentTrack.TabIndex = 0;
             this.lblCurrentTrack.Text = "Track";
             // 
             // lblCurrentArtist
             // 
-            this.lblCurrentArtist.AutoSize = true;
-            this.lblCurrentArtist.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCurrentArtist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCurrentArtist.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentArtist.ForeColor = System.Drawing.Color.DarkGray;
             this.lblCurrentArtist.Location = new System.Drawing.Point(193, 59);
             this.lblCurrentArtist.Name = "lblCurrentArtist";
-            this.lblCurrentArtist.Size = new System.Drawing.Size(51, 22);
+            this.lblCurrentArtist.Size = new System.Drawing.Size(418, 20);
             this.lblCurrentArtist.TabIndex = 1;
             this.lblCurrentArtist.Text = "Artist";
             // 
             // lblAlbum
             // 
-            this.lblAlbum.AutoSize = true;
-            this.lblAlbum.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAlbum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAlbum.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAlbum.ForeColor = System.Drawing.Color.DarkGray;
             this.lblAlbum.Location = new System.Drawing.Point(193, 96);
             this.lblAlbum.Name = "lblAlbum";
-            this.lblAlbum.Size = new System.Drawing.Size(59, 22);
+            this.lblAlbum.Size = new System.Drawing.Size(418, 20);
             this.lblAlbum.TabIndex = 3;
             this.lblAlbum.Text = "Album";
             // 
@@ -91,14 +94,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLog.BackColor = System.Drawing.SystemColors.ControlDark;
             this.txtLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtLog.Font = new System.Drawing.Font("Open Sans", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLog.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.txtLog.Location = new System.Drawing.Point(12, 257);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(641, 451);
+            this.txtLog.Size = new System.Drawing.Size(599, 451);
             this.txtLog.TabIndex = 4;
             // 
             // timer1
@@ -108,11 +111,11 @@
             // chkTopMost
             // 
             this.chkTopMost.AutoSize = true;
-            this.chkTopMost.Font = new System.Drawing.Font("Open Sans", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkTopMost.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkTopMost.ForeColor = System.Drawing.Color.DarkGray;
             this.chkTopMost.Location = new System.Drawing.Point(12, 228);
             this.chkTopMost.Name = "chkTopMost";
-            this.chkTopMost.Size = new System.Drawing.Size(121, 23);
+            this.chkTopMost.Size = new System.Drawing.Size(114, 21);
             this.chkTopMost.TabIndex = 9;
             this.chkTopMost.Text = "Always on top";
             this.chkTopMost.UseVisualStyleBackColor = true;
@@ -128,7 +131,7 @@
             this.trackPosition.Minimum = 0;
             this.trackPosition.Name = "trackPosition";
             this.trackPosition.ProgressBarColor = System.Drawing.Color.Gray;
-            this.trackPosition.Size = new System.Drawing.Size(456, 10);
+            this.trackPosition.Size = new System.Drawing.Size(414, 10);
             this.trackPosition.TabIndex = 8;
             this.trackPosition.Text = "smoothProgressBar1";
             this.trackPosition.Value = 0;
@@ -140,7 +143,7 @@
             this.btnExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExpand.Location = new System.Drawing.Point(0, 714);
             this.btnExpand.Name = "btnExpand";
-            this.btnExpand.Size = new System.Drawing.Size(665, 23);
+            this.btnExpand.Size = new System.Drawing.Size(623, 23);
             this.btnExpand.TabIndex = 5;
             this.btnExpand.TabStop = false;
             this.btnExpand.Text = "▼";
@@ -152,7 +155,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(665, 737);
+            this.ClientSize = new System.Drawing.Size(623, 737);
             this.Controls.Add(this.chkTopMost);
             this.Controls.Add(this.trackPosition);
             this.Controls.Add(this.btnExpand);
