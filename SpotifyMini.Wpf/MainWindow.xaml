@@ -1,0 +1,60 @@
+﻿<Window x:Class="SpotifyMini.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SpotifyMini.Wpf"
+        MinHeight="230"
+        MinWidth="100"
+        Height="385" 
+        Width="227"
+        mc:Ignorable="d"
+        Title="Spotify Mini" Background="#FF191919" MouseDown="Window_MouseDown" WindowStartupLocation="CenterOwner" BorderThickness="0,0,0,0" Icon="blue.ico" ResizeMode="CanResizeWithGrip" AllowsTransparency="True" WindowStyle="None" SizeChanged="Window_SizeChanged">
+    <Window.ContextMenu>
+<ContextMenu>
+    <MenuItem x:Name="chkTopMost" Header="_Top Most"
+              IsCheckable="True" Unchecked="chkTopMost_Checked" Checked="chkTopMost_Checked" />
+        </ContextMenu>
+    </Window.ContextMenu>
+    <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <!--<Button x:Name="CloseButton" Width="20" Height="20"
+                HorizontalAlignment="Right"
+                KeyboardNavigation.IsTabStop="False"
+                Content="X" Visibility="Hidden"
+                DockPanel.Dock="Top"
+                Click="CloseButton_OnClick" Background="#FF858585" Foreground="#FFE6E6E6" FontWeight="Bold" FontSize="8"/>-->
+        <Image DockPanel.Dock="Top" x:Name="pictureBox1" HorizontalAlignment="Stretch" Stretch="Uniform" Margin="0,0,0,0" VerticalAlignment="Top" Width="100" Height="100"/>
+        <ProgressBar DockPanel.Dock="Top" Minimum="0" Maximum="100" Height="5" Name="trackPosition" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF787878"  />
+        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+            <Label DockPanel.Dock="Left" x:Name="lblCurrentTime" MouseDown="LblCurrentTime_OnMouseDown" Margin="10,0,0,0" Content="-:--" HorizontalContentAlignment="Left" Foreground="White" FontFamily="Open Sans" FontSize="12" />
+            <Label DockPanel.Dock="Left" x:Name="lblTimeLeft" MouseDown="LblTimeLeft_OnMouseDown" Visibility="Collapsed" Margin="7,0,0,0" Content="-:--" HorizontalContentAlignment="Left" Foreground="White" FontFamily="Open Sans" FontSize="12" />
+            <Label DockPanel.Dock="Right" x:Name="lblTotalTime" Margin="0,0,10,0"  Content="-:--" HorizontalContentAlignment="Right" Foreground="White" FontFamily="Open Sans" FontSize="12" />
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+            <Button x:Name="Previous" DockPanel.Dock="Left" HorizontalAlignment="Left" Margin="0,0,0,0" Foreground="#FFEEEEEE" Background="{x:Null}" BorderBrush="{x:Null}" Click="Previous_OnClick" FontSize="18" >⏮️</Button>
+            <Button x:Name="PlayPause" DockPanel.Dock="Left" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="#FFEEEEEE" Background="{x:Null}" BorderBrush="{x:Null}" Click="PlayPause_OnClick" FontSize="18" Width="30">⏸️</Button>
+            <Button x:Name="Next" DockPanel.Dock="Left" HorizontalAlignment="Left" Margin="0,0,0,0" Foreground="#FFEEEEEE" Background="{x:Null}" BorderBrush="{x:Null}" Click="Next_OnClick" FontSize="18">⏭️</Button>
+        </DockPanel>
+
+        <Label DockPanel.Dock="Top" x:Name="lblCurrentTrack" HorizontalAlignment="Stretch" Margin="0,0,0,0" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Open Sans Extrabold" FontSize="14" FontWeight="Bold">
+            <Label.Content>
+                <AccessText TextWrapping="Wrap" Text="Track"/>
+            </Label.Content>
+        </Label>
+        <Label DockPanel.Dock="Top" x:Name="lblCurrentArtist" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" FontFamily="Open Sans Light" FontSize="14">
+            <Label.Content>
+                <AccessText TextWrapping="Wrap" Text="Artist"/>
+            </Label.Content>
+        </Label>
+        <Label DockPanel.Dock="Top" x:Name="lblCurrentAlbum" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" FontFamily="Open Sans Light" FontWeight="Bold" FontSize="14">
+            <Label.Content>
+                <AccessText TextWrapping="Wrap" Text="Album"/>
+            </Label.Content>
+        </Label>
+        <Label DockPanel.Dock="Top" Visibility="Hidden" x:Name="lblLog" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" FontFamily="Open Sans Light" FontWeight="Bold" FontSize="14">
+            <Label.Content>
+                <AccessText TextWrapping="Wrap" Text="Log"/>
+            </Label.Content>
+        </Label>
+    </DockPanel>
+</Window>

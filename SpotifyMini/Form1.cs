@@ -24,6 +24,7 @@ namespace SpotifyViewer
         IconButton playButton = new IconButton();
         IconButton nextButton = new IconButton();
         IconButton previousButton = new IconButton();
+	    private int ReconnectAttempts = 0;
         private Track CurrentTrack;
         public Form1()
         {
@@ -44,13 +45,21 @@ namespace SpotifyViewer
 
             Spotify.OnTrackChange += (sender, args) =>
             {
-                Logger.Debug("OnTrackChange, NewTrack:{0}", args.NewTrack.TrackResource.Name);
-                var oldTrack = "None";
-                if (args.OldTrack.TrackResource != null)
-                    oldTrack = args.OldTrack.TrackResource.Name;
-                Log("TrackChange", $"Old Track: {oldTrack} New Track: {args.NewTrack.TrackResource.Name}");
-                CurrentTrack = Spotify.GetStatus().Track;
-                DisplayCurrentSong(CurrentTrack);
+	            if (args.NewTrack?.TrackResource != null)
+	            {
+		            Logger.Debug("OnTrackChange, NewTrack:{0}", args.NewTrack.TrackResource.Name);
+		            var oldTrack = "None";
+		            if (args.OldTrack.TrackResource != null)
+			            oldTrack = args.OldTrack.TrackResource.Name;
+		            Log("TrackChange", $"Old Track: {oldTrack} New Track: {args.NewTrack.TrackResource.Name}");
+		            CurrentTrack = Spotify.GetStatus().Track;
+		            DisplayCurrentSong(CurrentTrack);
+	            }
+	            else
+	            {
+		            Log("TrackChange", "Disconnected from Spotify, trying to reconnect");
+		            Startup();
+	            }
             };
 
             Spotify.OnTrackTimeChange += (sender, args) =>
@@ -73,17 +82,35 @@ namespace SpotifyViewer
         {
             SpotifyLocalAPI.RunSpotify();
 
-            Spotify.Connect();
-            Logger.Debug("Connected to spotify");
+	        try
+	        {
+		        Spotify.Connect();
+		        Logger.Debug("Connected to spotify");
 
-            Logger.Debug("Getting status");
-            var status = Spotify.GetStatus();
-            Logger.Debug("Done getting status");
-            CurrentTrack = status.Track;
-            DisplayCurrentSong(status.Track);
-            SetPlayPause(status.Playing);
+		        Logger.Debug("Getting status");
+		        var status = Spotify.GetStatus();
+		        Logger.Debug("Done getting status");
+		        CurrentTrack = status.Track;
+		        DisplayCurrentSong(status.Track);
+		        SetPlayPause(status.Playing);
 
-            ChangeTrackPosition(status.PlayingPosition);
+		        ChangeTrackPosition(status.PlayingPosition);
+		        ReconnectAttempts = 0;
+	        }
+	        catch (System.Net.WebException ex)
+	        {
+				//"The remote server returned an error: (503) Server Unavailable."
+				//ex
+				//		ex.Status	ProtocolError	System.Net.WebExceptionStatus
+		        ReconnectAttempts++;
+				Log("Startup", $"Error connecting to spotify:{ex.Status.ToString()}. Starting timer to reconnect");
+		        if (ReconnectAttempts < 10)
+					timer2.Enabled = true;
+		        else
+		        {
+					Log("Startup", "Reconnect tried more than 10 times, stopping. Please Restart SpotifyMini.");
+		        }
+			}
         }
 
 
@@ -330,7 +357,13 @@ namespace SpotifyViewer
             this.TopMost = chkTopMost.Checked;
         }
 
-        //▲
-        //▼
-    }
+		private void timer2_Tick(object sender, EventArgs e)
+		{
+			timer2.Enabled = false;
+			Startup();
+		}
+
+		//▲
+		//▼
+	}
 }

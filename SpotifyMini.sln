@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyMini", "SpotifyMini\SpotifyMini.csproj", "{F7456F17-D636-446D-8CA9-6BAA45C0C5DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyMini.Wpf", "SpotifyMini.Wpf\SpotifyMini.Wpf.csproj", "{7F8DAC2C-1C64-4178-B90D-6984130874DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F7456F17-D636-446D-8CA9-6BAA45C0C5DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7456F17-D636-446D-8CA9-6BAA45C0C5DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7456F17-D636-446D-8CA9-6BAA45C0C5DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F8DAC2C-1C64-4178-B90D-6984130874DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F8DAC2C-1C64-4178-B90D-6984130874DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F8DAC2C-1C64-4178-B90D-6984130874DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F8DAC2C-1C64-4178-B90D-6984130874DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
