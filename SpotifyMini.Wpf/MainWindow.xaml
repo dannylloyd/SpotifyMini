@@ -4,38 +4,57 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpotifyMini.Wpf"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         MinHeight="230"
         MinWidth="100"
         Height="385" 
         Width="227"
+        MaxHeight="780"
+        MaxWidth="580"
         mc:Ignorable="d"
-        Title="Spotify Mini" Background="#FF191919" MouseDown="Window_MouseDown" WindowStartupLocation="CenterOwner" BorderThickness="0,0,0,0" Icon="blue.ico" ResizeMode="CanResizeWithGrip" AllowsTransparency="True" WindowStyle="None" SizeChanged="Window_SizeChanged">
+        Title="Spotify Mini" Background="#FF33312A" MouseDown="Window_MouseDown" WindowStartupLocation="CenterOwner" BorderThickness="0,0,0,0" Icon="blue.ico" ResizeMode="CanResizeWithGrip" AllowsTransparency="True" WindowStyle="None" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="Open Sans" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+        <Style TargetType="Label" x:Key="MediaButton">
+            <Setter Property="Foreground" Value="#FFC0B9A5" />
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Width" Value="30"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Window.ContextMenu>
-<ContextMenu>
-    <MenuItem x:Name="chkTopMost" Header="_Top Most"
-              IsCheckable="True" Unchecked="chkTopMost_Checked" Checked="chkTopMost_Checked" />
+        <ContextMenu>
+            <MenuItem x:Name="chkTopMost" Header="_Top Most" IsCheckable="True" Unchecked="chkTopMost_Checked" Checked="chkTopMost_Checked" />
+            <MenuItem x:Name="btnShowLog" IsCheckable="false" Click="BtnShowLog_OnClick" Header="Show Log" />
+            <MenuItem x:Name="chkHideAlbumArt" IsCheckable="true" Click="ChkHideAlbumArt_OnClick" Header="Hide Album Art until next song" />
+            <MenuItem x:Name="btnClose" IsCheckable="false" Click="BtnClose_OnClick" Header="Exit" />
         </ContextMenu>
     </Window.ContextMenu>
     <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <!--<Button x:Name="CloseButton" Width="20" Height="20"
-                HorizontalAlignment="Right"
-                KeyboardNavigation.IsTabStop="False"
-                Content="X" Visibility="Hidden"
-                DockPanel.Dock="Top"
-                Click="CloseButton_OnClick" Background="#FF858585" Foreground="#FFE6E6E6" FontWeight="Bold" FontSize="8"/>-->
-        <Image DockPanel.Dock="Top" x:Name="pictureBox1" HorizontalAlignment="Stretch" Stretch="Uniform" Margin="0,0,0,0" VerticalAlignment="Top" Width="100" Height="100"/>
-        <ProgressBar DockPanel.Dock="Top" Minimum="0" Maximum="100" Height="5" Name="trackPosition" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF787878"  />
+        <Image DockPanel.Dock="Top" x:Name="pictureBox1" HorizontalAlignment="Stretch" Stretch="Uniform" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="200" />
+        <ProgressBar DockPanel.Dock="Top" Minimum="0" Maximum="100" Height="5" Name="trackPosition" Margin="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF52C343"  />
         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
-            <Label DockPanel.Dock="Left" x:Name="lblCurrentTime" MouseDown="LblCurrentTime_OnMouseDown" Margin="10,0,0,0" Content="-:--" HorizontalContentAlignment="Left" Foreground="White" FontFamily="Open Sans" FontSize="12" />
-            <Label DockPanel.Dock="Left" x:Name="lblTimeLeft" MouseDown="LblTimeLeft_OnMouseDown" Visibility="Collapsed" Margin="7,0,0,0" Content="-:--" HorizontalContentAlignment="Left" Foreground="White" FontFamily="Open Sans" FontSize="12" />
-            <Label DockPanel.Dock="Right" x:Name="lblTotalTime" Margin="0,0,10,0"  Content="-:--" HorizontalContentAlignment="Right" Foreground="White" FontFamily="Open Sans" FontSize="12" />
+            <Label DockPanel.Dock="Left" x:Name="lblCurrentTime" Margin="10,0,0,0"  Content="-:--" HorizontalContentAlignment="Left" Foreground="White" FontFamily="Open Sans" FontSize="12" />
+            <Label DockPanel.Dock="Right" x:Name="lblTotalTime" MouseDown="LblTotalTime_OnMouseDown" Margin="0,0,10,0" Content="-:--" HorizontalContentAlignment="Right" Foreground="White" FontFamily="Open Sans" FontSize="12" />
+            <Label DockPanel.Dock="Right" x:Name="lblTimeLeft" MouseDown="LblTimeLeft_OnMouseDown" Visibility="Collapsed" Margin="0,0,10,0" Content="-:--" HorizontalContentAlignment="Right" Foreground="White" FontFamily="Open Sans" FontSize="12" />
         </DockPanel>
-        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
-            <Button x:Name="Previous" DockPanel.Dock="Left" HorizontalAlignment="Left" Margin="0,0,0,0" Foreground="#FFEEEEEE" Background="{x:Null}" BorderBrush="{x:Null}" Click="Previous_OnClick" FontSize="18" >⏮️</Button>
-            <Button x:Name="PlayPause" DockPanel.Dock="Left" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="#FFEEEEEE" Background="{x:Null}" BorderBrush="{x:Null}" Click="PlayPause_OnClick" FontSize="18" Width="30">⏸️</Button>
-            <Button x:Name="Next" DockPanel.Dock="Left" HorizontalAlignment="Left" Margin="0,0,0,0" Foreground="#FFEEEEEE" Background="{x:Null}" BorderBrush="{x:Null}" Click="Next_OnClick" FontSize="18">⏭️</Button>
+        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Label fa:Awesome.Content="StepBackward" x:Name="Previous" DockPanel.Dock="Left" Margin="0,0,0,0" MouseLeftButtonDown="Previous_OnClick" Style="{StaticResource MediaButton}"/>
+            <Label fa:Awesome.Content="Play" x:Name="btnPlay" DockPanel.Dock="Left" Margin="20,0,20,0" MouseLeftButtonDown="PlayPause_OnClick" Style="{StaticResource MediaButton}"/>
+            <Label fa:Awesome.Content="Pause" x:Name="btnPause" DockPanel.Dock="Left" Margin="20,0,20,0" MouseLeftButtonDown="PlayPause_OnClick" Style="{StaticResource MediaButton}"/>
+            <Label fa:Awesome.Content="StepForward" x:Name="Next" DockPanel.Dock="Left" Margin="0,0,0,0" MouseLeftButtonDown="Next_OnClick" Style="{StaticResource MediaButton}"/>
         </DockPanel>
-
         <Label DockPanel.Dock="Top" x:Name="lblCurrentTrack" HorizontalAlignment="Stretch" Margin="0,0,0,0" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Open Sans Extrabold" FontSize="14" FontWeight="Bold">
             <Label.Content>
                 <AccessText TextWrapping="Wrap" Text="Track"/>
@@ -49,11 +68,6 @@
         <Label DockPanel.Dock="Top" x:Name="lblCurrentAlbum" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" FontFamily="Open Sans Light" FontWeight="Bold" FontSize="14">
             <Label.Content>
                 <AccessText TextWrapping="Wrap" Text="Album"/>
-            </Label.Content>
-        </Label>
-        <Label DockPanel.Dock="Top" Visibility="Hidden" x:Name="lblLog" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" FontFamily="Open Sans Light" FontWeight="Bold" FontSize="14">
-            <Label.Content>
-                <AccessText TextWrapping="Wrap" Text="Log"/>
             </Label.Content>
         </Label>
     </DockPanel>

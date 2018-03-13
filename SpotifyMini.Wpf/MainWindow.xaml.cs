@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Local.Models;
 using Application = System.Windows.Application;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Timer = System.Timers.Timer;
 
 namespace SpotifyMini.Wpf
 {
@@ -32,27 +34,37 @@ namespace SpotifyMini.Wpf
         SpotifyLocalAPI Spotify = new SpotifyLocalAPI();
         private int ReconnectAttempts = 0;
         private Track CurrentTrack;
+        private Timer ReconnectTimer = new Timer(500);
+        private Timer SettingsSaver = new Timer(5 * 60 * 1000);
+        public LogWindow LoggerWindow;
+        public Settings AppSettings;
 
         public MainWindow()
         {
             InitializeComponent();
             pictureBox1.Height = Double.NaN;
             pictureBox1.Width = Double.NaN;
-            SetSize();
+            SetSettings();
             Startup();
 
+            ReconnectTimer.Enabled = false;
+            ReconnectTimer.Elapsed += (sender, args) => Startup();
+            this.Closing += (sender, args) =>LoggerWindow?.Close();
+            SettingsSaver.Elapsed += (sender, args) => Save();
+
             Spotify.OnPlayStateChange += (sender, args) =>
-            {
-                Logger.Debug("OnPlayStateChange, Playing:{0}", args.Playing);
+			{
+				Debug.WriteLine("OnPlayStateChange, Playing:{0}", args.Playing);
+				Logger.Debug("OnPlayStateChange, Playing:{0}", args.Playing);
                 Log("PlayStateChange", $"Playing:{args.Playing}");
                 SetPlayPause(args.Playing);
             };
-
             Spotify.OnTrackChange += (sender, args) =>
             {
                 if (args.NewTrack?.TrackResource != null)
-                {
-                    Logger.Debug("OnTrackChange, NewTrack:{0}", args.NewTrack.TrackResource.Name);
+				{
+					Debug.WriteLine("OnTrackChange, NewTrack:{0}", args.NewTrack.TrackResource.Name);
+					Logger.Debug("OnTrackChange, NewTrack:{0}", args.NewTrack.TrackResource.Name);
                     var oldTrack = "None";
                     if (args.OldTrack.TrackResource != null)
                         oldTrack = args.OldTrack.TrackResource.Name;
@@ -61,15 +73,20 @@ namespace SpotifyMini.Wpf
                     DisplayCurrentSong(CurrentTrack);
                 }
                 else
-                {
-                    Log("TrackChange", "Disconnected from Spotify, trying to reconnect");
+				{
+					Debug.WriteLine("TrackChange", "Disconnected from Spotify, trying to reconnect");
+					Log("TrackChange", "Disconnected from Spotify, trying to reconnect");
                     Startup();
                 }
             };
 
             Spotify.OnTrackTimeChange += (sender, args) =>
             {
-
+	            if (Math.Abs(args.TrackTime) < .01)
+	            {
+					Log("OnTrackTimeChange", $"Track probably changed, we should get the song info again. Track pos {args.TrackTime}");
+		            Startup();
+				}
                 //Log("TrackTimeChange", $"TrackTime: {args.TrackTime}");
 
                 ChangeTrackPosition(args.TrackTime);
@@ -83,14 +100,25 @@ namespace SpotifyMini.Wpf
             Spotify.ListenForEvents = true;
         }
 
-        public void SetSize()
+
+
+        public void SetSettings()
         {
-            var fileName = $"{System.IO.Directory.GetCurrentDirectory()}\\Size.json";
+            var fileName = $"{System.IO.Directory.GetCurrentDirectory()}\\Settings.json";
             if (System.IO.File.Exists(fileName))
             {
-                var size = Newtonsoft.Json.JsonConvert.DeserializeObject<Size>(System.IO.File.ReadAllText(fileName));
-                this.Height = size.Height;
-                this.Width = size.Width;
+                var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(System.IO.File.ReadAllText(fileName));
+                AppSettings = settings;
+                this.Height = settings.Height;
+                this.Width = settings.Width;
+                this.Top = settings.Top;
+                this.Left = settings.Left;
+                this.Topmost = settings.TopMost;
+                this.chkTopMost.IsChecked = settings.TopMost;
+            }
+            else
+            {
+                System.IO.File.WriteAllText(fileName, Newtonsoft.Json.JsonConvert.SerializeObject(new Settings()));
             }
         }
 
@@ -120,12 +148,12 @@ namespace SpotifyMini.Wpf
                 //		ex.Status	ProtocolError	System.Net.WebExceptionStatus
                 ReconnectAttempts++;
                 Log("Startup", $"Error connecting to spotify:{ex.Status.ToString()}. Starting timer to reconnect");
-                //if (ReconnectAttempts < 10)
-                //    timer2.Enabled = true;
-                //else
-                //{
-                //    Log("Startup", "Reconnect tried more than 10 times, stopping. Please Restart SpotifyMini.");
-                //}
+                if (ReconnectAttempts < 10)
+                    ReconnectTimer.Enabled = true;
+                else
+                {
+                    Log("Startup", "Reconnect tried more than 10 times, stopping. Please Restart SpotifyMini.");
+                }
             }
         }
 
@@ -163,16 +191,18 @@ namespace SpotifyMini.Wpf
         delegate void LogArgReturningVoidDelegate(string action, string msg);
         public void Log(string action, string msg)
         {
-            //if (!CheckAccess())
-            //{
-            //    LogArgReturningVoidDelegate d = new LogArgReturningVoidDelegate(Log);
-            //    Dispatcher.Invoke(d, new object[] { action, msg });
-            //}
-            //else
-            //{
-            //    lblLog.Content += $"{action} - {msg}{Environment.NewLine}";
-            //    lblLog.Visibility = Visibility.Visible;
-            //}
+            if (LoggerWindow != null)
+            {
+                if (!CheckAccess())
+                {
+                    LogArgReturningVoidDelegate d = new LogArgReturningVoidDelegate(Log);
+                    Dispatcher.Invoke(d, new object[] {action, msg});
+                }
+                else
+                {
+                    LoggerWindow.Log.Text += $"{action} - {msg}{Environment.NewLine}";
+                }
+            }
 
         }
 
@@ -255,6 +285,8 @@ namespace SpotifyMini.Wpf
                 try
                 {
                     pictureBox1.Source = Convert(track.GetAlbumArt(AlbumArtSize.Size640));
+                    pictureBox1.Visibility = Visibility.Visible;
+                    chkHideAlbumArt.IsChecked = false;
                 }
                 catch (Exception e)
                 {
@@ -290,7 +322,7 @@ namespace SpotifyMini.Wpf
             }
             else
             {
-                PlayPause.Content = playing ? "⏸️" : "▶️";
+                SetPlayPauseButtons(playing);
             }
         }
 
@@ -316,20 +348,6 @@ namespace SpotifyMini.Wpf
         //    Application.Exit();
         //    //⏸
         //}
-
-        private async void pbPlayPause_Click(object sender, EventArgs e)
-        {
-            if (Spotify.GetStatus().Playing)
-            {
-                await Spotify.Pause();
-                PlayPause.Content = "▶️";
-            }
-            else
-            {
-                await Spotify.Play();
-                PlayPause.Content = "⏸️";
-            }
-        }
 
         private void pbPrevious_Click(object sender, EventArgs e)
         {
@@ -363,15 +381,15 @@ namespace SpotifyMini.Wpf
             App.Current.MainWindow.Close();
         }
 
-        private void LblCurrentTime_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void LblTotalTime_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            lblCurrentTime.Visibility = Visibility.Collapsed;
+            lblTotalTime.Visibility = Visibility.Collapsed;
             lblTimeLeft.Visibility = Visibility.Visible;
         }
 
         private void LblTimeLeft_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            lblCurrentTime.Visibility = Visibility.Visible;
+            lblTotalTime.Visibility = Visibility.Visible;
             lblTimeLeft.Visibility = Visibility.Collapsed;
         }
         private void Previous_OnClick(object sender, RoutedEventArgs e)
@@ -384,12 +402,25 @@ namespace SpotifyMini.Wpf
             if (Spotify.GetStatus().Playing)
             {
                 await Spotify.Pause();
-                PlayPause.Content = "▶️";
             }
             else
             {
                 await Spotify.Play();
-                PlayPause.Content = "⏸️";
+            }
+            SetPlayPauseButtons(Spotify.GetStatus().Playing);
+        }
+
+        private void SetPlayPauseButtons(bool playing)
+        {
+            if (playing)
+            {
+                btnPlay.Visibility = Visibility.Collapsed;
+                btnPause.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                btnPlay.Visibility = Visibility.Visible;
+                btnPause.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -398,16 +429,44 @@ namespace SpotifyMini.Wpf
             Spotify.Skip();
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var size = e.NewSize;
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(size);
-            System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}\\Size.json", json);
-        }
-
         private void chkTopMost_Checked(object sender, RoutedEventArgs e)
         {
-            this.Topmost = chkTopMost.IsCheckable;
+            this.Topmost = chkTopMost.IsChecked;
+        }
+
+        private void BtnShowLog_OnClick(object sender, RoutedEventArgs e)
+        {
+            LoggerWindow = new LogWindow();
+            LoggerWindow.Left = this.Left + this.ActualWidth;
+            LoggerWindow.Top = this.Top;
+            LoggerWindow.Show();
+        }
+
+        private void BtnClose_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void ChkHideAlbumArt_OnClick(object sender, RoutedEventArgs e)
+        {
+            pictureBox1.Visibility = chkHideAlbumArt.IsChecked ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Save();
+        }
+
+        public void Save()
+        {
+            AppSettings.Top = this.Top;
+            AppSettings.Left = this.Left;
+            AppSettings.Width = this.Width;
+            AppSettings.Height = this.Height;
+            AppSettings.TopMost = this.Topmost;
+
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(AppSettings);
+            System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}\\Settings.json", json);
         }
     }
 }
