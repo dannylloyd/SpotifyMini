@@ -134,9 +134,12 @@ namespace SpotifyMini.Wpf
                 Logger.Debug("Getting status");
                 var status = Spotify.GetStatus();
                 Logger.Debug("Done getting status");
-                CurrentTrack = status.Track;
-                DisplayCurrentSong(status.Track);
-                SetPlayPause(status.Playing);
+	            if (CurrentTrack == null || CurrentTrack != status.Track)
+	            {
+					CurrentTrack = status.Track;
+					DisplayCurrentSong(status.Track);
+				}
+				SetPlayPause(status.Playing);
 
                 ChangeTrackPosition(status.PlayingPosition);
                 ReconnectAttempts = 0;
